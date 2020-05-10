@@ -16,7 +16,13 @@
 #   if CDS_COMPILER == CDS_COMPILER_GCC || CDS_COMPILER == CDS_COMPILER_CLANG || CDS_COMPILER == CDS_COMPILER_INTEL
 #       include <cds/threading/details/gcc_manager.h>
 #   endif
-#   include <cds/threading/details/pthread_manager.h>
+#   ifdef CDS_THREADING_HPX
+#        include <cds/threading/details/hpx_manager.h>
+#        include <hpx/hpx_main.hpp>
+#        include <hpx/hpx.hpp>
+#   else
+#        include <cds/threading/details/pthread_manager.h>
+#   endif
 #endif
 
 #ifdef CDS_CXX11_THREAD_LOCAL_SUPPORT
@@ -32,7 +38,12 @@ namespace cds {
         __declspec(thread) threading::ThreadData * threading::msvc_internal::s_pThreadData = nullptr;
 #   endif
 #else
+
+#   ifdef CDS_THREADING_HPX
+    pthread_key_t threading::hpx::Manager::Holder::m_key;
+#   else
     pthread_key_t threading::pthread::Manager::Holder::m_key;
+#   endif
 
 #   if CDS_COMPILER == CDS_COMPILER_GCC || CDS_COMPILER == CDS_COMPILER_CLANG
         __thread threading::gcc_internal::ThreadDataPlaceholder CDS_DATA_ALIGNMENT(8) threading::gcc_internal::s_threadData;

@@ -21,7 +21,7 @@
 #           if !defined(CDS_THREADING_GCC) && !defined(CDS_THREADING_WIN_TLS) && !defined(CDS_THREADING_CXX11)
 #               define CDS_THREADING_WIN_TLS
 #           endif
-#       elif !defined(CDS_THREADING_GCC) && !defined(CDS_THREADING_PTHREAD) && !defined(CDS_THREADING_CXX11)
+#       elif !defined(CDS_THREADING_GCC) && !defined(CDS_THREADING_PTHREAD) && !defined(CDS_THREADING_CXX11) && !defined(CDS_THREADING_HPX)
 #           define CDS_THREADING_PTHREAD
 #       endif
 #   else
@@ -41,6 +41,8 @@
 #   include <cds/threading/details/gcc.h>
 #elif defined(CDS_THREADING_CXX11)
 #   include <cds/threading/details/cxx11.h>
+#elif defined(CDS_THREADING_HPX)
+#   include <cds/threading/details/hpx.h>
 #elif !defined(CDS_THREADING_USER_DEFINED)
 #   error "You must define one of CDS_THREADING_xxx macro before compiling the application"
 #endif
