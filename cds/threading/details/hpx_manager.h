@@ -26,7 +26,7 @@
 namespace cds { namespace threading {
 
     /// cds::threading::Manager implementation based on pthread thread-specific data functions
-    inline namespace hpx {
+    inline namespace hpx_threads {
 
         /// Thread-specific data manager based on pthread thread-specific data functions
         /**

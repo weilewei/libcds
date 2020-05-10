@@ -40,7 +40,7 @@ namespace cds {
 #else
 
 #   ifdef CDS_THREADING_HPX
-    pthread_key_t threading::hpx::Manager::Holder::m_key;
+    pthread_key_t threading::hpx_threads::Manager::Holder::m_key;
 #   else
     pthread_key_t threading::pthread::Manager::Holder::m_key;
 #   endif
