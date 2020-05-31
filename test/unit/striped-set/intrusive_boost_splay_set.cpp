@@ -5,6 +5,7 @@
 
 #ifdef CDSUNIT_ENABLE_BOOST_CONTAINER
 
+#include <hpx/config.hpp>
 #include <boost/version.hpp>
 
 #include "test_intrusive_striped_set.h"

@@ -5,6 +5,7 @@
 
 #ifdef CDSUNIT_ENABLE_BOOST_CONTAINER
 
+#include <hpx/config.hpp>
 #include <boost/version.hpp>
 #include <cds/details/defs.h>
 

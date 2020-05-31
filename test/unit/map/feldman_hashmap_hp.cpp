@@ -3,6 +3,7 @@
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE or copy at http://www.boost.org/LICENSE_1_0.txt)
 
+#include <hpx/hpx_main.hpp>
 #include "test_feldman_hashmap_hp.h"
 
 #include <cds/container/feldman_hashmap_hp.h>

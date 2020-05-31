@@ -5,6 +5,7 @@
 
 #include <cds_test/ext_gtest.h>
 #include <cds/container/fcdeque.h>
+#include <hpx/config.hpp>
 #include <boost/container/deque.hpp>
 
 namespace {

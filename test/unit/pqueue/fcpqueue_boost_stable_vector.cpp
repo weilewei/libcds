@@ -5,6 +5,7 @@
 
 #include "test_fcpqueue.h"
 #include <cds/container/fcpriority_queue.h>
+#include <hpx/config.hpp>
 #include <boost/container/stable_vector.hpp>
 #include <boost/container/deque.hpp>
 

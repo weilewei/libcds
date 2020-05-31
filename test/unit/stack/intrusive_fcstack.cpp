@@ -6,6 +6,7 @@
 #include <cds_test/ext_gtest.h>
 #include <cds/intrusive/fcstack.h>
 
+#include <hpx/config.hpp>
 #include <boost/intrusive/list.hpp>
 
 namespace {

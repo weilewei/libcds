@@ -7,6 +7,7 @@
 #include <cds/intrusive/fcqueue.h>
 
 #include <vector>
+#include <hpx/config.hpp>
 #include <boost/intrusive/slist.hpp>
 
 namespace {
