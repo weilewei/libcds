@@ -10,6 +10,7 @@
 #include <cds/algo/backoff_strategy.h>
 #include <mutex>
 #include <condition_variable>
+#include <hpx/config.hpp>
 #include <boost/thread/tss.hpp>  // thread_specific_ptr
 
 

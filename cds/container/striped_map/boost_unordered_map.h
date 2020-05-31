@@ -7,6 +7,7 @@
 #define CDSLIB_CONTAINER_STRIPED_MAP_BOOST_UNORDERED_MAP_ADAPTER_H
 
 #include <cds/container/striped_set/adapter.h>
+#include <hpx/config.hpp>
 #include <boost/unordered_map.hpp>
 
 //@cond

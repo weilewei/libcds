@@ -9,6 +9,7 @@
 #include <cds/algo/flat_combining.h>
 #include <cds/algo/elimination_opt.h>
 #include <cds/intrusive/options.h>
+#include <hpx/config.hpp>
 #include <boost/intrusive/list.hpp>
 
 namespace cds { namespace intrusive {

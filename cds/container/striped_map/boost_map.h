@@ -6,12 +6,14 @@
 #ifndef CDSLIB_CONTAINER_STRIPED_MAP_BOOST_MAP_ADAPTER_H
 #define CDSLIB_CONTAINER_STRIPED_MAP_BOOST_MAP_ADAPTER_H
 
+#include <hpx/config.hpp>
 #include <boost/version.hpp>
 #if BOOST_VERSION < 104800
 #   error "For boost::container::map you must use boost 1.48 or above"
 #endif
 
 #include <cds/container/striped_set/adapter.h>
+#include <hpx/config.hpp>
 #include <boost/container/map.hpp>
 
 //@cond

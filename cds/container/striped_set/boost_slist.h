@@ -8,6 +8,7 @@
 
 #include <functional>   // ref
 #include <cds/container/striped_set/adapter.h>
+#include <hpx/config.hpp>
 #include <boost/container/slist.hpp>
 
 //@cond

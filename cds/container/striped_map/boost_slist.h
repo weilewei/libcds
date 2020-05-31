@@ -6,6 +6,7 @@
 #ifndef CDSLIB_CONTAINER_STRIPED_MAP_BOOST_SLIST_ADAPTER_H
 #define CDSLIB_CONTAINER_STRIPED_MAP_BOOST_SLIST_ADAPTER_H
 
+#include <hpx/config.hpp>
 #include <boost/version.hpp>
 #if BOOST_VERSION < 104800
 #   error "For boost::container::slist you must use boost 1.48 or above"
@@ -14,6 +15,7 @@
 #include <functional>   // ref
 #include <utility>      // std::pair
 #include <cds/container/striped_set/adapter.h>
+#include <hpx/config.hpp>
 #include <boost/container/slist.hpp>
 
 //@cond

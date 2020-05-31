@@ -6,6 +6,7 @@
 #ifndef CDSLIB_INTRUSIVE_STRIPED_SET_BOOST_LIST_ADAPTER_H
 #define CDSLIB_INTRUSIVE_STRIPED_SET_BOOST_LIST_ADAPTER_H
 
+#include <hpx/config.hpp>
 #include <boost/intrusive/list.hpp>
 #include <cds/intrusive/striped_set/adapter.h>
 

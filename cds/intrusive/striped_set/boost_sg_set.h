@@ -6,6 +6,7 @@
 #ifndef CDSLIB_INTRUSIVE_STRIPED_SET_BOOST_SG_SET_ADAPTER_H
 #define CDSLIB_INTRUSIVE_STRIPED_SET_BOOST_SG_SET_ADAPTER_H
 
+#include <hpx/config.hpp>
 #include <boost/intrusive/sg_set.hpp>
 #include <cds/intrusive/striped_set/adapter.h>
 

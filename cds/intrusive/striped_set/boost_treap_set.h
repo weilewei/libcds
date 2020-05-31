@@ -6,6 +6,7 @@
 #ifndef CDSLIB_INTRUSIVE_STRIPED_SET_BOOST_TREAP_SET_ADAPTER_H
 #define CDSLIB_INTRUSIVE_STRIPED_SET_BOOST_TREAP_SET_ADAPTER_H
 
+#include <hpx/config.hpp>
 #include <boost/intrusive/treap_set.hpp>
 #include <cds/intrusive/striped_set/adapter.h>
 

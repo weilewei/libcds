@@ -13,6 +13,7 @@
 #include <cds/sync/spinlock.h>
 #include <cds/opt/permutation.h>
 
+#include <hpx/config.hpp>
 #include <boost/intrusive/slist.hpp>
 
 #if CDS_COMPILER == CDS_COMPILER_MSVC

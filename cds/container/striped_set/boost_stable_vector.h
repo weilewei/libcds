@@ -6,6 +6,7 @@
 #ifndef CDSLIB_CONTAINER_STRIPED_SET_BOOST_STABLE_VECTOR_ADAPTER_H
 #define CDSLIB_CONTAINER_STRIPED_SET_BOOST_STABLE_VECTOR_ADAPTER_H
 
+#include <hpx/config.hpp>
 #include <boost/version.hpp>
 #if BOOST_VERSION < 104800
 #   error "For boost::container::stable_vector you must use boost 1.48 or above"
@@ -15,6 +16,7 @@
 #include <algorithm>    // std::lower_bound
 #include <utility>      // std::pair
 #include <cds/container/striped_set/adapter.h>
+#include <hpx/config.hpp>
 #include <boost/container/stable_vector.hpp>
 
 //@cond

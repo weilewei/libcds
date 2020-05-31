@@ -6,6 +6,7 @@
 #ifndef CDSLIB_CONTAINER_STRIPED_SET_BOOST_LIST_ADAPTER_H
 #define CDSLIB_CONTAINER_STRIPED_SET_BOOST_LIST_ADAPTER_H
 
+#include <hpx/config.hpp>
 #include <boost/version.hpp>
 #if BOOST_VERSION < 104800
 #   error "For boost::container::list you must use boost 1.48 or above"
@@ -14,6 +15,7 @@
 #include <algorithm>    // std::lower_bound
 #include <functional>   // ref
 #include <cds/container/striped_set/adapter.h>
+#include <hpx/config.hpp>
 #include <boost/container/list.hpp>
 
 //@cond

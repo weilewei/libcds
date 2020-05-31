@@ -6,6 +6,7 @@
 #ifndef CDSLIB_INTRUSIVE_STRIPED_SET_BOOST_SPLAY_SET_ADAPTER_H
 #define CDSLIB_INTRUSIVE_STRIPED_SET_BOOST_SPLAY_SET_ADAPTER_H
 
+#include <hpx/config.hpp>
 #include <boost/intrusive/splay_set.hpp>
 #include <cds/intrusive/striped_set/adapter.h>
 
