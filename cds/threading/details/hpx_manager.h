@@ -12,46 +12,40 @@
 #include <cds/threading/details/_common.h>
 #include <cds/details/throw_exception.h>
 
-#include <hpx/hpx.hpp>
 #include <hpx/include/threads.hpp>
-#include <hpx/include/thread_executors.hpp>
-#include <hpx/include/threadmanager.hpp>
-#include <hpx/threading_base/thread_data.hpp>
-#include <hpx/coroutines/thread_id_type.hpp>
-#include <hpx/threading_base/thread_helpers.hpp>
 
 #include <iostream>
 
 //@cond
 namespace cds { namespace threading {
 
-    /// cds::threading::Manager implementation based on pthread thread-specific data functions
-    inline namespace hpx_threads {
+    /// cds::threading::Manager implementation based on hpxthread thread-specific data functions
+    inline namespace hpxthread {
 
-        /// Thread-specific data manager based on pthread thread-specific data functions
+        /// Thread-specific data manager based on hpxthread thread-specific data functions
         /**
-            Manager throws an exception of Manager::pthread_exception class if an error occurs
+            Manager throws an exception of Manager::hpxthread_exception class if an error occurs
         */
         class Manager {
         private :
-            /// pthread error code type
-            typedef int pthread_error_code;
+            /// hpxthread error code type
+            typedef int hpxthread_error_code;
 
-            /// pthread exception
-            class pthread_exception: public std::system_error
+            /// hpxthread exception
+            class hpxthread_exception: public std::system_error
             {
             public:
                 /// Exception constructor
-                pthread_exception( int nCode, const char * pszFunction )
+                hpxthread_exception( int nCode, const char * pszFunction )
                     : std::system_error( nCode, std::system_category(), pszFunction )
                 {}
             };
 
-            /// pthread TLS key holder
+            /// hpxthread TLS key holder
             struct Holder {
             //@cond
-                static pthread_key_t       m_key;
-                static hpx::threads::thread_id_type id;
+//                static pthread_key_t       m_key;
+                static hpx::thread::id m_key;
 
                 static void key_destructor(void * p)
                 {
@@ -63,34 +57,46 @@ namespace cds { namespace threading {
 
                 static void init()
                 {
-                    pthread_error_code  nErr;
-                    if ( ( nErr = pthread_key_create( &m_key, key_destructor )) != 0 )
-                        CDS_THROW_EXCEPTION( pthread_exception( nErr, "pthread_key_create" ));
+//                    hpxthread_error_code  nErr;
+                    m_key = hpx::this_thread::get_id();
+//                    if ( ( nErr = pthread_key_create( &m_key, key_destructor )) != 0 )
+//                    if(m_key == hpx::threads::invalid_thread_id)
+//                    {
+//                        CDS_THROW_EXCEPTION( hpxthread_exception( nErr, "hpxthread_key_create" ));
+//                    }
                 }
 
                 static void fini()
                 {
-                    pthread_error_code  nErr;
-                    if ( ( nErr = pthread_key_delete( m_key )) != 0 )
-                        CDS_THROW_EXCEPTION( pthread_exception( nErr, "pthread_key_delete" ));
+//                    hpxthread_error_code  nErr;
+//                    if ( ( nErr = pthread_key_delete( m_key )) != 0 )
+//                        CDS_THROW_EXCEPTION( hpxthread_exception( nErr, "hpxthread_key_delete" ));
+                     m_key = hpx::thread::id();
                 }
 
                 static ThreadData *    get()
                 {
-                    return reinterpret_cast<ThreadData *>( pthread_getspecific( m_key ));
+//                    return reinterpret_cast<ThreadData *>( pthread_getspecific( m_key ));
+                    return reinterpret_cast<ThreadData *>( hpx::this_thread::get_thread_data());
                 }
 
                 static void alloc()
                 {
-                    pthread_error_code  nErr;
-                    ThreadData * pData = new ThreadData;
-                    if ( ( nErr = pthread_setspecific( m_key, pData )) != 0 )
-                        CDS_THROW_EXCEPTION( pthread_exception( nErr, "pthread_setspecific" ));
+//                    hpxthread_error_code  nErr;
+//                    ThreadData * pData = new ThreadData;
+//                    if ( ( nErr = pthread_setspecific( m_key, pData )) != 0 )
+                    ThreadData* pData = new ThreadData();
+                    hpx::this_thread::set_thread_data(reinterpret_cast<std::size_t>(pData) );
+//                    {
+//                        CDS_THROW_EXCEPTION( hpxthread_exception( nErr, "hpxthread_setspecific" ));
+//                    }
                 }
                 static void free()
                 {
                     ThreadData * p = get();
-                    pthread_setspecific( m_key, nullptr );
+                    hpx::this_thread::set_thread_data(reinterpret_cast<std::size_t>(nullptr) );
+//                    pthread_setspecific( m_key, nullptr );
+                    m_key = hpx::thread::id();
                     delete p;
                 }
             //@endcond
@@ -161,13 +167,14 @@ namespace cds { namespace threading {
 
             /// This method must be called in beginning of thread execution
             /**
-                If TLS pointer to manager's data is \p nullptr, pthread_exception is thrown
+                If TLS pointer to manager's data is \p nullptr, hpxthread_exception is thrown
                 with code = -1.
-                If an error occurs in call of pthread API function, pthread_exception is thrown
-                with pthread error code.
+                If an error occurs in call of hpxthread API function, hpxthread_exception is thrown
+                with hpxthread error code.
             */
             static void attachThread()
             {
+                std::cout << "\n ------- attaching thread!!!! --------\n";
                 ThreadData * pData = _threadData( do_attachThread );
                 assert( pData );
 
@@ -175,15 +182,15 @@ namespace cds { namespace threading {
                     pData->init();
                 }
                 else
-                    CDS_THROW_EXCEPTION( pthread_exception( -1, "cds::threading::pthread::Manager::attachThread" ));
+                    CDS_THROW_EXCEPTION( hpxthread_exception( -1, "cds::threading::hpxthread::Manager::attachThread" ));
             }
 
             /// This method must be called in end of thread execution
             /**
-                If TLS pointer to manager's data is \p nullptr, pthread_exception is thrown
+                If TLS pointer to manager's data is \p nullptr, hpxthread_exception is thrown
                 with code = -1.
-                If an error occurs in call of pthread API function, pthread_exception is thrown
-                with pthread error code.
+                If an error occurs in call of hpxthread API function, hpxthread_exception is thrown
+                with hpxthread error code.
             */
             static void detachThread()
             {
@@ -195,7 +202,7 @@ namespace cds { namespace threading {
                         _threadData( do_detachThread );
                 }
                 else
-                    CDS_THROW_EXCEPTION( pthread_exception( -1, "cds::threading::pthread::Manager::detachThread" ));
+                    CDS_THROW_EXCEPTION( hpxthread_exception( -1, "cds::threading::hpxthread::Manager::detachThread" ));
             }
 
             /// Returns ThreadData pointer for the current thread
@@ -213,7 +220,7 @@ namespace cds { namespace threading {
 
         };
 
-    } // namespace pthread
+    } // namespace hpxthread
 }} // namespace cds::threading
 //@endcond
 
