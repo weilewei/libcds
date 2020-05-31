@@ -103,7 +103,8 @@ namespace cds { namespace urcu { namespace details {
     template <typename RCUtag>
     inline void sh_singleton<RCUtag>::raise_signal( cds::OS::ThreadId tid )
     {
-        pthread_kill( tid, m_nSigNo );
+//        pthread_kill( tid, m_nSigNo );
+//        hpx::thread::interrupt(m_nSigNo );
     }
 
     template <typename RCUtag>
