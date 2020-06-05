@@ -20,7 +20,6 @@ namespace cds { namespace OS {
 
         /// Posix thread id type
         typedef hpx::thread::id ThreadId;
-//        typedef hpx::thread::id ThreadId;
 
         /// Get current thread id
         static inline ThreadId get_current_thread_id()

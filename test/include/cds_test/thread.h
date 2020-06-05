@@ -186,7 +186,7 @@ namespace cds_test {
 
             if ( duration != std::chrono::seconds::zero()) {
                 for ( ;; ) {
-                    std::this_thread::sleep_for( native_duration );
+                    hpx::this_thread::sleep_for( native_duration );
                     auto time_now = std::chrono::steady_clock::now();
                     if ( time_now >= expected_end )
                         break;
