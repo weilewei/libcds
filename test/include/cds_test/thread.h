@@ -13,6 +13,9 @@
 #include <mutex>
 #include <chrono>
 #include <cds/threading/model.h>
+#include <hpx/include/threads.hpp>
+#include <hpx/synchronization/spinlock.hpp>
+#include <hpx/synchronization/condition_variable.hpp>
 
 namespace cds_test {
 
@@ -73,13 +76,13 @@ namespace cds_test {
 
             void reset( size_t count )
             {
-                std::unique_lock< std::mutex > lock( m_mtx );
+                std::unique_lock< hpx::lcos::local::mutex > lock( m_mtx );
                 m_count = count;
             }
 
             bool wait()
             {
-                std::unique_lock< std::mutex > lock( m_mtx );
+                std::unique_lock< hpx::lcos::local::mutex > lock( m_mtx );
                 if ( --m_count == 0 ) {
                     m_cv.notify_all();
                     return true;
@@ -93,8 +96,8 @@ namespace cds_test {
 
         private:
             size_t      m_count;
-            std::mutex  m_mtx;
-            std::condition_variable m_cv;
+            hpx::lcos::local::mutex  m_mtx;
+            hpx::lcos::local::condition_variable m_cv;
         };
 
         class initial_gate
@@ -106,27 +109,27 @@ namespace cds_test {
 
             void wait()
             {
-                std::unique_lock< std::mutex > lock( m_mtx );
+                std::unique_lock< hpx::lcos::local::mutex > lock( m_mtx );
                 while ( !m_ready )
                     m_cv.wait( lock );
             }
 
             void ready()
             {
-                std::unique_lock< std::mutex > lock( m_mtx );
+                std::unique_lock< hpx::lcos::local::mutex > lock( m_mtx );
                 m_ready = true;
                 m_cv.notify_all();
             }
 
             void reset()
             {
-                std::unique_lock< std::mutex > lock( m_mtx );
+                std::unique_lock< hpx::lcos::local::mutex > lock( m_mtx );
                 m_ready = false;
             }
 
         private:
-            std::mutex  m_mtx;
-            std::condition_variable m_cv;
+            hpx::lcos::local::mutex  m_mtx;
+            hpx::lcos::local::condition_variable m_cv;
             bool        m_ready;
         };
 
@@ -166,7 +169,7 @@ namespace cds_test {
             m_stopBarrier.reset( m_workers.size() + 1 );
 
             // Create threads
-            std::vector< std::thread > threads;
+            std::vector< hpx::thread > threads;
             threads.reserve( m_workers.size());
             for ( auto w : m_workers )
                 threads.emplace_back( &thread::run, w );
