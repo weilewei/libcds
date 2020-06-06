@@ -8,7 +8,6 @@
 
 #include <system_error>
 #include <stdio.h>
-//#include <pthread.h>
 #include <cds/threading/details/_common.h>
 #include <cds/details/throw_exception.h>
 
@@ -19,53 +18,23 @@
 //@cond
 namespace cds { namespace threading {
 
-    //@cond
-    struct hpx_internal {
-        typedef unsigned char  ThreadDataPlaceholder[ sizeof(ThreadData) ];
-        static ThreadDataPlaceholder s_threadData;
-        static ThreadData * s_pThreadData;
-    };
-    //@endcond
+    /// cds::threading::Manager implementation based on hpxthread thread-specific data functions
+    inline namespace hpxthread {
 
-    /// cds::threading::Manager implementation based on HPX threading
-    inline namespace hpx {
-
-        /// Thread-specific data manager
+        /// Thread-specific data manager based on hpxthread thread-specific data functions
+        /**
+            Manager throws an exception of Manager::hpxthread_exception class if an error occurs
+        */
         class Manager {
-        private :
-            //@cond
-            static ThreadData * _threadData()
-            {
-                return hpx_internal::s_pThreadData;
-            }
-
-            static ThreadData * create_thread_data()
-            {
-                if ( !hpx_internal::s_pThreadData ) {
-                    hpx_internal::s_pThreadData = new (hpx_internal::s_threadData) ThreadData();
-                }
-                return hpx_internal::s_pThreadData;
-            }
-
-            static void destroy_thread_data()
-            {
-                if ( hpx_internal::s_pThreadData ) {
-                    hpx_internal::s_pThreadData->ThreadData::~ThreadData();
-                    hpx_internal::s_pThreadData = nullptr;
-                }
-            }
-
-            //@endcond
-
         public:
-            /// Initialize manager (empty function)
+            /// Initialize manager
             /**
                 This function is automatically called by cds::Initialize
             */
             static void init()
             {}
 
-            /// Terminate manager (empty function)
+            /// Terminate manager
             /**
                 This function is automatically called by cds::Terminate
             */
@@ -75,42 +44,55 @@ namespace cds { namespace threading {
             /// Checks whether current thread is attached to \p libcds feature or not.
             static bool isThreadAttached()
             {
-                ThreadData * pData = _threadData();
+                ThreadData * pData = reinterpret_cast<ThreadData*> (hpx::threads::get_thread_data(hpx::threads::get_self_id()));
                 return pData != nullptr;
             }
 
             /// This method must be called in beginning of thread execution
             static void attachThread()
             {
-                create_thread_data()->init();
+                std::stringstream temp;
+                temp << "\n attaching thread and my thread id: "<< hpx::threads::get_self_id();
+                std::cout << temp.str();
+
+                ThreadData * pData = reinterpret_cast<ThreadData*> (hpx::threads::get_thread_data(hpx::threads::get_self_id()));
+                if(pData == nullptr)
+                {
+                    pData = new ThreadData;
+                    hpx::threads::set_thread_data(hpx::threads::get_self_id(), reinterpret_cast<std::size_t>(pData));
+                }
+                assert( pData );
+                pData->init();
             }
 
             /// This method must be called in end of thread execution
             static void detachThread()
             {
-                assert( _threadData());
+                ThreadData * pData = reinterpret_cast<ThreadData*> (hpx::threads::get_thread_data(hpx::threads::get_self_id()));
+                assert( pData );
 
-                if ( _threadData()->fini())
-                    destroy_thread_data();
+                if ( pData->fini())
+                    hpx::threads::set_thread_data(hpx::threads::get_self_id(), reinterpret_cast<std::size_t>(nullptr));
             }
 
-            /// Returns internal ThreadData pointer for the current thread
+            /// Returns ThreadData pointer for the current thread
             static ThreadData * thread_data()
             {
-                ThreadData * p = _threadData();
-                assert( p );
-                return p;
+                return reinterpret_cast<ThreadData*> (hpx::threads::get_thread_data(hpx::threads::get_self_id()));
+
             }
 
             //@cond
             static size_t fake_current_processor()
             {
-                return _threadData()->fake_current_processor();
+                ThreadData * pData = reinterpret_cast<ThreadData*> (hpx::threads::get_thread_data(hpx::threads::get_self_id()));
+                return pData->fake_current_processor();
             }
             //@endcond
+
         };
 
-    } // namespace hpx
+    } // namespace pthread
 }} // namespace cds::threading
 //@endcond
 

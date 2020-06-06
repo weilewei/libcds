@@ -38,8 +38,8 @@ namespace cds {
 #else
 
 #   ifdef CDS_THREADING_HPX
-    threading::hpx_internal::ThreadDataPlaceholder threading::hpx_internal::s_threadData;
-    threading::ThreadData * threading::hpx_internal::s_pThreadData = nullptr;
+//    threading::hpx_internal::ThreadDataPlaceholder threading::hpx_internal::s_threadData;
+//    threading::ThreadData * threading::hpx_internal::s_pThreadData = nullptr;
 #   else
     pthread_key_t threading::pthread::Manager::Holder::m_key;
 #   endif
