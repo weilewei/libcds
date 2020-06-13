@@ -10,8 +10,7 @@
 #include <stdio.h>
 #include <cds/threading/details/_common.h>
 #include <cds/details/throw_exception.h>
-
-#include <hpx/include/threads.hpp>
+#include <hpx/modules/threading.hpp>
 
 #include <iostream>
 
@@ -51,10 +50,6 @@ namespace cds { namespace threading {
             /// This method must be called in beginning of thread execution
             static void attachThread()
             {
-                std::stringstream temp;
-                temp << "\n attaching thread and my thread id: "<< hpx::threads::get_self_id();
-                std::cout << temp.str();
-
                 ThreadData * pData = reinterpret_cast<ThreadData*> (hpx::threads::get_thread_data(hpx::threads::get_self_id()));
                 if(pData == nullptr)
                 {

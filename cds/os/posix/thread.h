@@ -11,8 +11,7 @@
 
 #include <hpx/config.hpp>
 #include <hpx/config/defines.hpp>
-#include <hpx/hpx.hpp>
-#include <hpx/include/threads.hpp>
+#include <hpx/modules/threading.hpp>
 
 namespace cds { namespace OS {
     /// posix-related wrappers
