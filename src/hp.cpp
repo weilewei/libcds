@@ -13,6 +13,7 @@
 #if CDS_OS_TYPE == CDS_OS_LINUX
 #   include <unistd.h>
 #   include <sys/syscall.h>
+#include <sstream>
 
     // membarrier() was added in Linux 4.3
 #   if !defined( __NR_membarrier )
@@ -119,10 +120,11 @@ namespace cds { namespace gc { namespace hp {
 
     /*static*/ CDS_EXPORT_API smr* smr::instance_ = nullptr;
 //    thread_local thread_data* tls_ = nullptr;
-    thread_data* tls_ = nullptr;
+//    thread_data* tls_ = nullptr;
 
     /*static*/ CDS_EXPORT_API thread_data* smr::tls()
     {
+        thread_data * tls_ = reinterpret_cast<thread_data*> (hpx::threads::get_libcds_data(hpx::threads::get_self_id()));
         assert( tls_ != nullptr );
         return tls_;
     }
@@ -313,15 +315,21 @@ namespace cds { namespace gc { namespace hp {
 
     /*static*/ CDS_EXPORT_API void smr::attach_thread()
     {
+        thread_data * tls_ = reinterpret_cast<thread_data*> (hpx::threads::get_libcds_data(hpx::threads::get_self_id()));
         if ( !tls_ )
+        {
             tls_ = instance().alloc_thread_data();
+            hpx::threads::set_libcds_data(hpx::threads::get_self_id(), reinterpret_cast<std::size_t>(tls_));
+        }
     }
 
     /*static*/ CDS_EXPORT_API void smr::detach_thread()
     {
-        thread_data* rec = tls_;
+        thread_data * rec = reinterpret_cast<thread_data*> (hpx::threads::get_libcds_data(hpx::threads::get_self_id()));
+//        thread_data* rec = tls_;
         if ( rec ) {
-            tls_ = nullptr;
+//            tls_ = nullptr;
+            hpx::threads::set_libcds_data(hpx::threads::get_self_id(), reinterpret_cast<std::size_t>(nullptr));
             instance().free_thread_data( static_cast<thread_record*>( rec ), true );
         }
     }
@@ -472,13 +480,16 @@ namespace cds { namespace gc { namespace hp {
 
     CDS_EXPORT_API void smr::help_scan( thread_data* pThis )
     {
-        assert( static_cast<thread_record*>( pThis )->thread_id_.load( atomics::memory_order_relaxed ) == cds::OS::get_current_thread_id());
+//        std::stringstream temp;
+//        temp << "left: "<< static_cast<thread_record*>( pThis )->thread_id_.load( atomics::memory_order_acquire ) <<
+//                " right: " << cds::OS::get_current_thread_id() << "\n";
+//        std::cout << temp.str();
 
         CDS_HPSTAT( ++pThis->help_scan_count_ );
 
         const cds::OS::ThreadId nullThreadId = cds::OS::c_NullThreadId;
         const cds::OS::ThreadId curThreadId = cds::OS::get_current_thread_id();
-        for ( thread_record* hprec = thread_list_.load( atomics::memory_order_acquire ); hprec; hprec = hprec->next_ )
+        for ( thread_record* hprec = thread_list_.load( atomics::memory_order_relaxed ); hprec; hprec = hprec->next_ )
         {
             if ( hprec == static_cast<thread_record*>( pThis ))
                 continue;

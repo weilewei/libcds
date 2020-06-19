@@ -55,7 +55,7 @@ namespace cds { namespace gc { namespace dhp {
     } // namespace
 
     /*static*/ CDS_EXPORT_API smr* smr::instance_ = nullptr;
-    thread_local thread_data* tls_ = nullptr;
+//    thread_local thread_data* tls_ = nullptr;
 
     CDS_EXPORT_API hp_allocator::~hp_allocator()
     {
@@ -132,6 +132,7 @@ namespace cds { namespace gc { namespace dhp {
 
     /*static*/ CDS_EXPORT_API thread_data* smr::tls()
     {
+        thread_data * tls_ = reinterpret_cast<thread_data*> (hpx::threads::get_libcds_data(hpx::threads::get_self_id()));
         assert( tls_ != nullptr );
         return tls_;
     }
@@ -216,15 +217,21 @@ namespace cds { namespace gc { namespace dhp {
 
     /*static*/ CDS_EXPORT_API void smr::attach_thread()
     {
+        thread_data * tls_ = reinterpret_cast<thread_data*> (hpx::threads::get_libcds_data(hpx::threads::get_self_id()));
         if ( !tls_ )
+        {
             tls_ = instance().alloc_thread_data();
+            hpx::threads::set_libcds_data(hpx::threads::get_self_id(), reinterpret_cast<std::size_t>(tls_));
+        }
     }
 
     /*static*/ CDS_EXPORT_API void smr::detach_thread()
     {
-        thread_data* rec = tls_;
+        thread_data * rec = reinterpret_cast<thread_data*> (hpx::threads::get_libcds_data(hpx::threads::get_self_id()));
+//        thread_data* rec = tls_;
         if ( rec ) {
-            tls_ = nullptr;
+//            tls_ = nullptr;
+            hpx::threads::set_libcds_data(hpx::threads::get_self_id(), reinterpret_cast<std::size_t>(nullptr));
             instance().free_thread_data( static_cast<thread_record*>( rec ), true );
         }
     }
