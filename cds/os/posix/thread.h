@@ -18,18 +18,18 @@ namespace cds { namespace OS {
     inline namespace posix {
 
         /// Posix thread id type
-        typedef hpx::thread::id ThreadId;
+        typedef hpx::threads::thread_id ThreadId;
 
         /// Get current thread id
         static inline ThreadId get_current_thread_id()
         {
 //            return pthread_self();
-            return hpx::this_thread::get_id();
+            return hpx::threads::get_self_id();
         }
     }    // namespace posix
 
     //@cond
-    const posix::ThreadId c_NullThreadId = hpx::thread::id();
+    constexpr const posix::ThreadId c_NullThreadId = hpx::threads::invalid_thread_id;
     //@endcond
 
 }} // namespace cds::OS
