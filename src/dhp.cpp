@@ -132,7 +132,8 @@ namespace cds { namespace gc { namespace dhp {
 
     /*static*/ CDS_EXPORT_API thread_data* smr::tls()
     {
-        thread_data * tls_ = reinterpret_cast<thread_data*> (hpx::threads::get_libcds_data(hpx::threads::get_self_id()));
+        std::vector<size_t> vec_tls = hpx::threads::get_libcds_data(hpx::threads::get_self_id());
+        thread_data * tls_ = reinterpret_cast<thread_data*> (vec_tls[1]);
         assert( tls_ != nullptr );
         return tls_;
     }
@@ -217,21 +218,25 @@ namespace cds { namespace gc { namespace dhp {
 
     /*static*/ CDS_EXPORT_API void smr::attach_thread()
     {
-        thread_data * tls_ = reinterpret_cast<thread_data*> (hpx::threads::get_libcds_data(hpx::threads::get_self_id()));
+        std::vector<size_t> vec_tls = hpx::threads::get_libcds_data(hpx::threads::get_self_id());
+        thread_data * tls_ = reinterpret_cast<thread_data*> (vec_tls[1]);
         if ( !tls_ )
         {
             tls_ = instance().alloc_thread_data();
-            hpx::threads::set_libcds_data(hpx::threads::get_self_id(), reinterpret_cast<std::size_t>(tls_));
+            vec_tls[1] = reinterpret_cast<std::size_t>(tls_);
+            hpx::threads::set_libcds_data(hpx::threads::get_self_id(),vec_tls);
         }
     }
 
     /*static*/ CDS_EXPORT_API void smr::detach_thread()
     {
-        thread_data * rec = reinterpret_cast<thread_data*> (hpx::threads::get_libcds_data(hpx::threads::get_self_id()));
-//        thread_data* rec = tls_;
+        std::vector<size_t> vec_tls = hpx::threads::get_libcds_data(hpx::threads::get_self_id());
+        thread_data * tls_ = reinterpret_cast<thread_data*> (vec_tls[1]);
+        thread_data* rec = tls_;
         if ( rec ) {
-//            tls_ = nullptr;
-            hpx::threads::set_libcds_data(hpx::threads::get_self_id(), reinterpret_cast<std::size_t>(nullptr));
+            tls_ = nullptr;
+            vec_tls[1] = reinterpret_cast<std::size_t>(tls_);
+            hpx::threads::set_libcds_data(hpx::threads::get_self_id(), vec_tls);
             instance().free_thread_data( static_cast<thread_record*>( rec ), true );
         }
     }
