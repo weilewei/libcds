@@ -13,6 +13,9 @@
 #include <hpx/config.hpp>
 #include <boost/thread/tss.hpp>  // thread_specific_ptr
 
+#include <hpx/synchronization/spinlock.hpp>
+#include <hpx/synchronization/condition_variable.hpp>
+
 
 namespace cds { namespace opt {
 
@@ -188,11 +191,11 @@ namespace cds { namespace algo { namespace flat_combining {
         class single_mutex_single_condvar
         {
         //@cond
-            std::mutex  m_mutex;
-            std::condition_variable m_condvar;
+            hpx::lcos::local::mutex  m_mutex;
+            hpx::lcos::local::condition_variable m_condvar;
             bool        m_wakeup;
 
-            typedef std::unique_lock< std::mutex > unique_lock;
+            typedef std::unique_lock< hpx::lcos::local::mutex > unique_lock;
         //@endcond
 
         public:
@@ -228,7 +231,7 @@ namespace cds { namespace algo { namespace flat_combining {
                             return true;
                         }
 
-                        bool ret = m_condvar.wait_for( lock, std::chrono::milliseconds( c_nWaitMilliseconds )) == std::cv_status::no_timeout;
+                        bool ret = m_condvar.wait_for( lock, std::chrono::milliseconds( c_nWaitMilliseconds )) == hpx::lcos::local::cv_status::no_timeout;
                         m_wakeup = false;
                         return ret;
                     }
@@ -264,10 +267,10 @@ namespace cds { namespace algo { namespace flat_combining {
         class single_mutex_multi_condvar
         {
         //@cond
-            std::mutex  m_mutex;
+            hpx::lcos::local::mutex  m_mutex;
             bool        m_wakeup;
 
-            typedef std::unique_lock< std::mutex > unique_lock;
+            typedef std::unique_lock< hpx::lcos::local::mutex > unique_lock;
         //@endcond
 
         public:
@@ -310,7 +313,7 @@ namespace cds { namespace algo { namespace flat_combining {
                             return true;
                         }
 
-                        bool ret = rec.m_condvar.wait_for( lock, std::chrono::milliseconds( c_nWaitMilliseconds )) == std::cv_status::no_timeout;
+                        bool ret = rec.m_condvar.wait_for( lock, std::chrono::milliseconds( c_nWaitMilliseconds )) == hpx::lcos::local::cv_status::no_timeout;
                         m_wakeup = false;
                         return ret;
                     }
@@ -344,7 +347,7 @@ namespace cds { namespace algo { namespace flat_combining {
         class multi_mutex_multi_condvar
         {
         //@cond
-            typedef std::unique_lock< std::mutex > unique_lock;
+            typedef std::unique_lock< hpx::lcos::local::mutex > unique_lock;
         //@endcond
         public:
             enum {
@@ -358,8 +361,8 @@ namespace cds { namespace algo { namespace flat_combining {
                 struct type: public PublicationRecord
                 {
                     //@cond
-                    std::mutex              m_mutex;
-                    std::condition_variable m_condvar;
+                    hpx::lcos::local::mutex              m_mutex;
+                    hpx::lcos::local::condition_variable m_condvar;
                     bool                    m_wakeup;
 
                     type()
@@ -387,7 +390,7 @@ namespace cds { namespace algo { namespace flat_combining {
                             return true;
                         }
 
-                        bool ret = rec.m_condvar.wait_for( lock, std::chrono::milliseconds( c_nWaitMilliseconds )) == std::cv_status::no_timeout;
+                        bool ret = rec.m_condvar.wait_for( lock, std::chrono::milliseconds( c_nWaitMilliseconds )) == hpx::lcos::local::cv_status::no_timeout;
                         rec.m_wakeup = false;
                         return ret;
                     }

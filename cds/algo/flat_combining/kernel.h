@@ -232,7 +232,7 @@ namespace cds { namespace algo {
             atomics::atomic<unsigned int>  m_nCount;    ///< Total count of combining passes. Used as an age.
             publication_record_type*    m_pHead;        ///< Head of active publication list
             publication_record_type*    m_pAllocatedHead; ///< Head of allocated publication list
-            boost::thread_specific_ptr< publication_record_type > m_pThreadRec;   ///< Thread-local publication record
+            hpx::threads::thread_specific_ptr< publication_record_type > m_pThreadRec;   ///< Thread-local publication record
             mutable global_lock_type    m_Mutex;        ///< Global mutex
             mutable stat                m_Stat;         ///< Internal statistics
             unsigned int const          m_nCompactFactor;    ///< Publication list compacting factor (the list will be compacted through \p %m_nCompactFactor combining passes)
