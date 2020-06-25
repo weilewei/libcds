@@ -221,7 +221,7 @@ namespace {
         typedef base_hook_item< boost::intrusive::slist_base_hook<> > value_type;
         struct stack_traits : public cds::intrusive::fcstack::traits
         {
-            typedef std::mutex lock_type;
+            typedef hpx::lcos::local::mutex lock_type;
         };
         typedef cds::intrusive::FCStack< value_type, boost::intrusive::slist< value_type >, stack_traits > stack_type;
         test<stack_type>();
@@ -380,7 +380,7 @@ namespace {
         typedef base_hook_item< boost::intrusive::list_base_hook<> > value_type;
         typedef cds::intrusive::FCStack< value_type, boost::intrusive::list< value_type >,
             cds::intrusive::fcstack::make_traits<
-            cds::opt::lock_type< std::mutex >
+            cds::opt::lock_type< hpx::lcos::local::mutex >
             >::type
         > stack_type;
         test<stack_type>();

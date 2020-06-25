@@ -183,7 +183,7 @@ namespace {
                 cds::opt::enable_elimination< true >
             >::type
         {
-            typedef std::mutex lock_type;
+            typedef hpx::lcos::local::mutex lock_type;
         };
         typedef cds::container::FCDeque<int, std::deque<int>, deque_traits > deque_type;
 
@@ -265,7 +265,7 @@ namespace {
         typedef cds::container::FCDeque<int, boost::container::deque<int>,
             cds::container::fcdeque::make_traits<
                 cds::opt::enable_elimination< true >
-                ,cds::opt::lock_type< std::mutex >
+                ,cds::opt::lock_type< hpx::lcos::local::mutex >
             >::type
         > deque_type;
 
@@ -278,7 +278,7 @@ namespace {
         typedef cds::container::FCDeque<int, boost::container::deque<int>,
             cds::container::fcdeque::make_traits<
                 cds::opt::enable_elimination< true >
-                , cds::opt::lock_type< std::mutex >
+                , cds::opt::lock_type< hpx::lcos::local::mutex >
                 , cds::opt::wait_strategy< cds::algo::flat_combining::wait_strategy::multi_mutex_multi_condvar<>>
             >::type
         > deque_type;

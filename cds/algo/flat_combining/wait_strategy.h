@@ -285,7 +285,7 @@ namespace cds { namespace algo { namespace flat_combining {
                 struct type: public PublicationRecord
                 {
                     //@cond
-                    std::condition_variable m_condvar;
+                    hpx::lcos::local::condition_variable m_condvar;
                     //@endcond
                 };
             };
