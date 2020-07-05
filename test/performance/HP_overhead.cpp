@@ -71,7 +71,7 @@ void print_stats(const char* title, const char* wait, const char* exec,
     {
         hpx::util::format_to(temp,
                              "{1}, {:27}, {:15}, {:28}, {:8}, {:8}, {:20}, {:4}, {:4}, "
-                             "{:20} {:4}",
+                             "{:20}, {:4}",
                              count, title, wait, exec, duration, us, queuing, numa_sensitive,
                              num_threads, info_string, libcds);
     }

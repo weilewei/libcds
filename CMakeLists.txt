@@ -21,6 +21,7 @@ option(WITH_ASAN "Build ASan+UBSan instrumented code" OFF)
 option(WITH_TSAN "Build TSan instrumented code" OFF)
 option(ENABLE_UNIT_TEST "Enable unit test" ON)
 option(ENABLE_STRESS_TEST "Enable stress test" ON)
+option(ENABLE_PERFORMANCE_TEST "Enable performance test" ON)
 set(CMAKE_TARGET_ARCHITECTURE "" CACHE string "Target build architecture")
 
 if(NOT LIBCDS_WITH_HPX)
