@@ -43,20 +43,20 @@ namespace cds { namespace threading {
             /// Checks whether current thread is attached to \p libcds feature or not.
             static bool isThreadAttached()
             {
-                std::array<size_t, 3> hpx_thread_data = hpx::threads::get_libcds_data(hpx::threads::get_self_id());
-                ThreadData * pData = reinterpret_cast<ThreadData*> (hpx_thread_data[thread_manager_index]);
+                std::size_t hpx_thread_data = hpx::threads::get_libcds_data(hpx::threads::get_self_id());
+                ThreadData * pData = reinterpret_cast<ThreadData*> (hpx_thread_data);
                 return pData != nullptr;
             }
 
             /// This method must be called in beginning of thread execution
             static void attachThread()
             {
-                std::array<size_t, 3> hpx_thread_data = hpx::threads::get_libcds_data(hpx::threads::get_self_id());
-                ThreadData * pData = reinterpret_cast<ThreadData*> (hpx_thread_data[thread_manager_index]);
+                std::size_t hpx_thread_data = hpx::threads::get_libcds_data(hpx::threads::get_self_id());
+                ThreadData * pData = reinterpret_cast<ThreadData*> (hpx_thread_data);
                 if(pData == nullptr)
                 {
                     pData = new ThreadData;
-                    hpx_thread_data[thread_manager_index] = reinterpret_cast<std::size_t>(pData);
+                    hpx_thread_data = reinterpret_cast<std::size_t>(pData);
                     hpx::threads::set_libcds_data(hpx::threads::get_self_id(), hpx_thread_data);
                 }
                 assert( pData );
@@ -66,14 +66,13 @@ namespace cds { namespace threading {
             /// This method must be called in end of thread execution
             static void detachThread()
             {
-                std::array<size_t, 3> hpx_thread_data = hpx::threads::get_libcds_data(hpx::threads::get_self_id());
-                ThreadData * pData = reinterpret_cast<ThreadData*> (hpx_thread_data[thread_manager_index]);
+                std::size_t hpx_thread_data = hpx::threads::get_libcds_data(hpx::threads::get_self_id());
+                ThreadData * pData = reinterpret_cast<ThreadData*> (hpx_thread_data);
                 assert( pData );
 
                 if ( pData->fini())
                 {
-                    hpx_thread_data = hpx::threads::get_libcds_data(hpx::threads::get_self_id());
-                    hpx_thread_data[thread_manager_index] = reinterpret_cast<std::size_t>(nullptr);
+                    hpx_thread_data = reinterpret_cast<std::size_t>(nullptr);
                     hpx::threads::set_libcds_data(hpx::threads::get_self_id(), hpx_thread_data);
                 }
 
@@ -82,20 +81,18 @@ namespace cds { namespace threading {
             /// Returns ThreadData pointer for the current thread
             static ThreadData * thread_data()
             {
-                std::array<size_t, 3> hpx_thread_data = hpx::threads::get_libcds_data(hpx::threads::get_self_id());
-                return reinterpret_cast<ThreadData*> (hpx_thread_data[thread_manager_index]);
+                std::size_t hpx_thread_data = hpx::threads::get_libcds_data(hpx::threads::get_self_id());
+                return reinterpret_cast<ThreadData*> (hpx_thread_data);
             }
 
             //@cond
             static size_t fake_current_processor()
             {
-                std::array<size_t, 3> hpx_thread_data = hpx::threads::get_libcds_data(hpx::threads::get_self_id());
-                ThreadData * pData = reinterpret_cast<ThreadData*> (hpx_thread_data[thread_manager_index]);
+                std::size_t hpx_thread_data = hpx::threads::get_libcds_data(hpx::threads::get_self_id());
+                ThreadData * pData = reinterpret_cast<ThreadData*> (hpx_thread_data);
                 return pData->fake_current_processor();
             }
             //@endcond
-        private:
-            static constexpr int thread_manager_index = 0;
         };
 
     } // namespace pthread

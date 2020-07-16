@@ -122,12 +122,11 @@ namespace cds { namespace gc { namespace hp {
     /*static*/ CDS_EXPORT_API smr* smr::instance_ = nullptr;
 //    thread_local thread_data* tls_ = nullptr;
 //    thread_data* tls_ = nullptr;
-    static constexpr int hp_index = 1;
 
     /*static*/ CDS_EXPORT_API thread_data* smr::tls()
     {
-        std::array<size_t, 3> hpx_thread_data = hpx::threads::get_libcds_data(hpx::threads::get_self_id());
-        thread_data * tls_ = reinterpret_cast<thread_data*> (hpx_thread_data[hp_index]);
+        std::size_t hpx_hp_data = hpx::threads::get_libcds_hp_data(hpx::threads::get_self_id());
+        thread_data * tls_ = reinterpret_cast<thread_data*> (hpx_hp_data);
         assert( tls_ != nullptr );
         return tls_;
     }
@@ -318,25 +317,25 @@ namespace cds { namespace gc { namespace hp {
 
     /*static*/ CDS_EXPORT_API void smr::attach_thread()
     {
-        std::array<size_t, 3> hpx_thread_data = hpx::threads::get_libcds_data(hpx::threads::get_self_id());
-        thread_data * tls_ = reinterpret_cast<thread_data*> (hpx_thread_data[hp_index]);
+        std::size_t hpx_hp_data = hpx::threads::get_libcds_hp_data(hpx::threads::get_self_id());
+        thread_data * tls_ = reinterpret_cast<thread_data*> (hpx_hp_data);
         if ( !tls_ )
         {
             tls_ = instance().alloc_thread_data();
-            hpx_thread_data[hp_index] = reinterpret_cast<std::size_t>(tls_);
-            hpx::threads::set_libcds_data(hpx::threads::get_self_id(), hpx_thread_data);
+            hpx_hp_data = reinterpret_cast<std::size_t>(tls_);
+            hpx::threads::set_libcds_hp_data(hpx::threads::get_self_id(), hpx_hp_data);
         }
     }
 
     /*static*/ CDS_EXPORT_API void smr::detach_thread()
     {
-        std::array<size_t, 3> hpx_thread_data = hpx::threads::get_libcds_data(hpx::threads::get_self_id());
-        thread_data * tls_ = reinterpret_cast<thread_data*> (hpx_thread_data[hp_index]);
+        std::size_t hpx_hp_data = hpx::threads::get_libcds_hp_data(hpx::threads::get_self_id());
+        thread_data * tls_ = reinterpret_cast<thread_data*> (hpx_hp_data);
         thread_data* rec = tls_;
         if ( rec ) {
             tls_ = nullptr;
-            hpx_thread_data[hp_index] = reinterpret_cast<std::size_t>(tls_);
-            hpx::threads::set_libcds_data(hpx::threads::get_self_id(), hpx_thread_data);
+            hpx_hp_data = reinterpret_cast<std::size_t>(tls_);
+            hpx::threads::set_libcds_hp_data(hpx::threads::get_self_id(), hpx_hp_data);
             instance().free_thread_data( static_cast<thread_record*>( rec ), true );
         }
     }
