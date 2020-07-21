@@ -23,7 +23,7 @@ namespace cds { namespace OS {
 
 #if defined(CDS_THREADING_HPX)
         typedef hpx::threads::thread_id ThreadId;
-#elif
+#else
         typedef std::thread::native_handle_type ThreadId;
 #endif
         /// Get current thread id
@@ -31,7 +31,7 @@ namespace cds { namespace OS {
         {
 #if defined(CDS_THREADING_HPX)
             return hpx::threads::get_self_id();
-#elif
+#else
             return pthread_self();
 #endif
         }
@@ -40,7 +40,7 @@ namespace cds { namespace OS {
     //@cond
 #if defined(CDS_THREADING_HPX)
         constexpr const posix::ThreadId c_NullThreadId = hpx::threads::invalid_thread_id;
-#elif
+#else
         constexpr const posix::ThreadId c_NullThreadId = 0;
 #endif
     //@endcond

@@ -105,7 +105,7 @@ namespace cds { namespace urcu { namespace details {
     {
 #if defined(CDS_THREADING_HPX)
         // do nothing for now
-#elif
+#else
         pthread_kill( tid, m_nSigNo );
 #endif
     }

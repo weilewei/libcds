@@ -23,7 +23,7 @@ namespace cds { namespace OS {
 
 #if defined(CDS_THREADING_HPX)
         hpx::this_thread::yield();
-#elif
+#else
         std::this_thread::yield();
 #endif
     }

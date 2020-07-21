@@ -62,6 +62,12 @@ include_directories(
     ${GTEST_INCLUDE_DIRS}
 )
 
+if(LIBCDS_WITH_HPX)
+    if(LIBCDS_INSIDE_HPX)
+        set(HPX_MAIN_TARGET hpx_wrap)
+    endif()
+endif()
+
 set(CDS_TEST_LIBRARIES
     ${CDS_SHARED_LIBRARY}
     ${GTEST_LIBRARIES}

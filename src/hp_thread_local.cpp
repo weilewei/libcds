@@ -35,7 +35,7 @@ namespace cds {
                     cds::OS::posix::ThreadId thread_id = cds::OS::get_current_thread_id();
                     hpx_heap_tls_[thread_id] = new_tls;
                 }
-#elif
+#else
                 /*static*/ CDS_EXPORT_API thread_data *StrangeTLSManager::getTLS() {
                     if (cds::OS::get_current_thread_id() % 2 == 0) { // % 2 with ThreadId structure?
                         return tls2_->second;
