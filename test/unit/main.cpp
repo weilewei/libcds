@@ -3,14 +3,14 @@
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE or copy at http://www.boost.org/LICENSE_1_0.txt)
 
+#if defined(CDS_THREADING_HPX)
+#include <hpx/hpx_main.hpp>
+#endif
+
 #include <cds_test/ext_gtest.h>
 #include <cds/init.h>
 
 #include <cds_test/fixture.h>
-
-#if defined(CDS_THREADING_HPX)
-#include <hpx/hpx_main.hpp>
-#endif
 
 namespace cds_test {
     /*static*/ std::random_device fixture::random_dev_;
