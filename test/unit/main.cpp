@@ -8,6 +8,10 @@
 
 #include <cds_test/fixture.h>
 
+#if defined(CDS_THREADING_HPX)
+#include <hpx/hpx_main.hpp>
+#endif
+
 namespace cds_test {
     /*static*/ std::random_device fixture::random_dev_;
     /*static*/ std::mt19937 fixture::random_gen_( random_dev_());

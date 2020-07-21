@@ -21,7 +21,7 @@
 #           if !defined(CDS_THREADING_GCC) && !defined(CDS_THREADING_WIN_TLS) && !defined(CDS_THREADING_CXX11)
 #               define CDS_THREADING_WIN_TLS
 #           endif
-#       elif !defined(CDS_THREADING_GCC) && !defined(CDS_THREADING_PTHREAD) && !defined(CDS_THREADING_CXX11)
+#       elif !defined(CDS_THREADING_GCC) && !defined(CDS_THREADING_PTHREAD) && !defined(CDS_THREADING_CXX11) && !defined(CDS_THREADING_HPX)
 #           define CDS_THREADING_PTHREAD
 #       endif
 #   else
@@ -30,8 +30,9 @@
 #endif // #if defined(CDS_THREADING_AUTODETECT)
 
 
-
-#if defined(CDS_THREADING_MSVC)
+#if defined(CDS_THREADING_HPX)
+#   include <cds/threading/details/hpx.h>
+#elif defined(CDS_THREADING_MSVC)
 #   include <cds/threading/details/msvc.h>
 #elif defined(CDS_THREADING_WIN_TLS)
 #   include <cds/threading/details/wintls.h>

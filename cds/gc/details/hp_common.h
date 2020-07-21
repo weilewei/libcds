@@ -459,6 +459,13 @@ namespace cds { namespace gc { namespace hp { namespace details {
                     static CDS_EXPORT_API thread_data* getTLS();
                     static CDS_EXPORT_API void setTLS(thread_data*);
                 };
+#if defined(CDS_THREADING_HPX)
+                class HPXTLSManager {
+                public:
+                    static CDS_EXPORT_API thread_data* getTLS();
+                    static CDS_EXPORT_API void setTLS(thread_data*);
+                };
+#endif
 }}}}
 
 #endif // #ifndef CDSLIB_GC_DETAILS_HP_COMMON_H

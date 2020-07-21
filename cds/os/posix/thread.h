@@ -9,22 +9,40 @@
 #include <pthread.h>
 #include <signal.h>
 
+#if defined(CDS_THREADING_HPX)
+#include <hpx/config.hpp>
+#include <hpx/config/defines.hpp>
+#include <hpx/modules/threading.hpp>
+#endif
+
 namespace cds { namespace OS {
     /// posix-related wrappers
     inline namespace posix {
 
         /// Posix thread id type
-        typedef std::thread::native_handle_type ThreadId;
 
+#if defined(CDS_THREADING_HPX)
+        typedef hpx::threads::thread_id ThreadId;
+#elif
+        typedef std::thread::native_handle_type ThreadId;
+#endif
         /// Get current thread id
         static inline ThreadId get_current_thread_id()
         {
+#if defined(CDS_THREADING_HPX)
+            return hpx::threads::get_self_id();
+#elif
             return pthread_self();
+#endif
         }
     }    // namespace posix
 
     //@cond
-    constexpr const posix::ThreadId c_NullThreadId = 0;
+#if defined(CDS_THREADING_HPX)
+        constexpr const posix::ThreadId c_NullThreadId = hpx::threads::invalid_thread_id;
+#elif
+        constexpr const posix::ThreadId c_NullThreadId = 0;
+#endif
     //@endcond
 
 }} // namespace cds::OS

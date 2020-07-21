@@ -16,7 +16,11 @@ namespace {
     {
         typedef cds_test::IntrusiveTreiberStack base_class;
     protected:
+#if defined(CDS_THREADING_HPX)
+        typedef cds::gc::custom_HP<cds::gc::hp::details::HPXTLSManager> gc_type;
+#else
         typedef cds::gc::custom_HP<cds::gc::hp::details::HeapTLSManager> gc_type;
+#endif
 
         void SetUp()
         {
@@ -30,17 +34,28 @@ namespace {
                     >
             >::type
               > stack_type;
-
+#if defined(CDS_THREADING_HPX)
+            cds::gc::hp::custom_smr<cds::gc::hp::details::HPXTLSManager>::construct( stack_type::c_nHazardPtrCount );
+            //cds::threading::Manager::attachThread();
+            cds::gc::hp::custom_smr<cds::gc::hp::details::HPXTLSManager>::attach_thread(); // extra attach
+#else
             cds::gc::hp::custom_smr<cds::gc::hp::details::HeapTLSManager>::construct( stack_type::c_nHazardPtrCount );
             //cds::threading::Manager::attachThread();
             cds::gc::hp::custom_smr<cds::gc::hp::details::HeapTLSManager>::attach_thread(); // extra attach
+#endif
         }
 
         void TearDown()
         {
+#if defined(CDS_THREADING_HPX)
+            //cds::threading::Manager::detachThread();
+            cds::gc::hp::custom_smr<cds::gc::hp::details::HPXTLSManager>::detach_thread(); // extra detach
+            cds::gc::hp::custom_smr<cds::gc::hp::details::HPXTLSManager>::destruct();
+#else
             //cds::threading::Manager::detachThread();
             cds::gc::hp::custom_smr<cds::gc::hp::details::HeapTLSManager>::detach_thread(); // extra detach
             cds::gc::hp::custom_smr<cds::gc::hp::details::HeapTLSManager>::destruct();
+#endif
         }
 
         template <typename Stack>

@@ -20,7 +20,12 @@ namespace cds { namespace OS {
     /// Default backoff::yield implementation
     static inline void    backoff()
     {
+
+#if defined(CDS_THREADING_HPX)
+        hpx::this_thread::yield();
+#elif
         std::this_thread::yield();
+#endif
     }
 }} // namespace cds::OS
 

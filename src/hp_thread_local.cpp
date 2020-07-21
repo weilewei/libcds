@@ -16,6 +16,7 @@ namespace cds {
                         nullptr);
                 const size_t MAXIMUM_THREAD_ID = 10000000;
                 static thread_data *heap_tls_[MAXIMUM_THREAD_ID];
+                static std::map<cds::OS::posix::ThreadId, thread_data*> hpx_heap_tls_;
 
                 /*static*/ CDS_EXPORT_API thread_data *DefaultTLSManager::getTLS() {
                     return tls_;
@@ -24,7 +25,17 @@ namespace cds {
                 /*static*/ CDS_EXPORT_API void DefaultTLSManager::setTLS(thread_data *new_tls) {
                     tls_ = new_tls;
                 }
+#if defined(CDS_THREADING_HPX)
+                /*static*/ CDS_EXPORT_API thread_data *HPXTLSManager::getTLS() {
+                    cds::OS::posix::ThreadId thread_id = cds::OS::get_current_thread_id();
+                    return hpx_heap_tls_[thread_id];
+                }
 
+                /*static*/ CDS_EXPORT_API void HPXTLSManager::setTLS(thread_data *new_tls) {
+                    cds::OS::posix::ThreadId thread_id = cds::OS::get_current_thread_id();
+                    hpx_heap_tls_[thread_id] = new_tls;
+                }
+#elif
                 /*static*/ CDS_EXPORT_API thread_data *StrangeTLSManager::getTLS() {
                     if (cds::OS::get_current_thread_id() % 2 == 0) { // % 2 with ThreadId structure?
                         return tls2_->second;
@@ -50,6 +61,7 @@ namespace cds {
                     cds::OS::posix::ThreadId thread_id = cds::OS::get_current_thread_id();
                     heap_tls_[thread_id % MAXIMUM_THREAD_ID] = new_tls;
                 }
+#endif
             }
         }
     }
