@@ -74,6 +74,7 @@ namespace cds { namespace threading {
                 {
                     hpx_thread_data = reinterpret_cast<std::size_t>(nullptr);
                     hpx::threads::set_libcds_data(hpx::threads::get_self_id(), hpx_thread_data);
+                    delete pData;
                 }
 
             }

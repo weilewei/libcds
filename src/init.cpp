@@ -11,7 +11,11 @@
 #   if CDS_COMPILER == CDS_COMPILER_MSVC || CDS_COMPILER == CDS_COMPILER_INTEL
 #       include <cds/threading/details/msvc_manager.h>
 #   endif
+#   ifdef CDS_THREADING_HPX
+#        include <cds/threading/details/hpx_manager.h>
+#   else
 #   include <cds/threading/details/wintls_manager.h>
+#   endif
 #else   // CDS_OS_INTERFACE != CDS_OSI_WINDOWS
 #   if CDS_COMPILER == CDS_COMPILER_GCC || CDS_COMPILER == CDS_COMPILER_CLANG || CDS_COMPILER == CDS_COMPILER_INTEL
 #       include <cds/threading/details/gcc_manager.h>
@@ -29,7 +33,7 @@
 
 namespace cds {
 
-#if CDS_OS_INTERFACE == CDS_OSI_WINDOWS
+#if CDS_OS_INTERFACE == CDS_OSI_WINDOWS && !defined(CDS_THREADING_HPX)
     CDS_EXPORT_API DWORD cds::threading::wintls::Manager::Holder::m_key = TLS_OUT_OF_INDEXES;
 #   if CDS_COMPILER == CDS_COMPILER_MSVC || CDS_COMPILER == CDS_COMPILER_INTEL
         __declspec( thread ) threading::msvc_internal::ThreadDataPlaceholder threading::msvc_internal::s_threadData;
@@ -37,10 +41,7 @@ namespace cds {
 #   endif
 #else
 
-#   ifdef CDS_THREADING_HPX
-//    threading::hpx_internal::ThreadDataPlaceholder threading::hpx_internal::s_threadData;
-//    threading::ThreadData * threading::hpx_internal::s_pThreadData = nullptr;
-#   else
+#   ifndef CDS_THREADING_HPX
     pthread_key_t threading::pthread::Manager::Holder::m_key;
 #   endif
 
