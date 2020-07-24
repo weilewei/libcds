@@ -349,6 +349,10 @@ namespace cds {}
     }
 #endif
 
+#if CDS_THREADING_HPX
+#include <hpx/config.hpp>
+#endif
+
 // Compiler-specific defines
 #include <cds/compiler/defs.h>
 
