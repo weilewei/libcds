@@ -62,6 +62,12 @@ include_directories(
     ${GTEST_INCLUDE_DIRS}
 )
 
+if(LIBCDS_WITH_HPX)
+    if(LIBCDS_INSIDE_HPX)
+        set(HPX_MAIN_TARGET hpx_wrap)
+    endif()
+endif()
+
 set(CDS_TEST_LIBRARIES
     ${CDS_SHARED_LIBRARY}
     ${GTEST_LIBRARIES}
@@ -69,9 +75,10 @@ set(CDS_TEST_LIBRARIES
     ${Boost_SYSTEM_LIBRARY}
     ${CMAKE_THREAD_LIBS_INIT}
     ${EXTERNAL_SYSTEM_LIBS}
+    ${HPX_MAIN_TARGET}
 )
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGTEST_LANG_CXX11") 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGTEST_LANG_CXX11")
 
 if(CMAKE_COMPILER_IS_GNUCXX AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "8.0.0")
     #   gcc 4.8 - 6: disable noise -Wunused-local-typedefs
@@ -143,6 +150,9 @@ if(LIBCDS_ENABLE_UNIT_TEST)
 endif()
 if(LIBCDS_ENABLE_STRESS_TEST)
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/stress)
+endif()
+if(ENABLE_PERFORMANCE_TEST)
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/performance)
 endif()
 
 file(GLOB SANITIZER_OPTION_FILES ${PROJECT_SOURCE_DIR}/tools/tsan-suppression)
