@@ -197,7 +197,11 @@ namespace {
         struct traits : public cds::intrusive::fcqueue::traits
         {
             typedef IntrusiveFCQueue::disposer disposer;
+#if CDS_THREADING_HPX
             typedef hpx::lcos::local::mutex lock_type;
+#else
+            typedef std::mutex lock_type;
+#endif
             typedef cds::intrusive::fcqueue::stat<> stat;
         };
         typedef cds::intrusive::FCQueue< value_type, boost::intrusive::list< value_type >, traits > queue_type;
