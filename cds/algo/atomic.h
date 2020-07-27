@@ -37,10 +37,13 @@ namespace cds {
 namespace cxx11_atomic {
 }} // namespace cds::cxx11_atomic
 
+#if CDS_THREADING_HPX
+#   include <hpx/config.hpp>
+#endif
+
 //@cond
 #if defined(CDS_USE_BOOST_ATOMIC)
     // boost atomic
-#   include <hpx/config.hpp>
 #   include <boost/version.hpp>
 #   if BOOST_VERSION >= 105400
 #       include <boost/atomic.hpp>

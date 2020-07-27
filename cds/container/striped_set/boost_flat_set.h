@@ -6,14 +6,16 @@
 #ifndef CDSLIB_CONTAINER_STRIPED_SET_BOOST_FLAT_SET_ADAPTER_H
 #define CDSLIB_CONTAINER_STRIPED_SET_BOOST_FLAT_SET_ADAPTER_H
 
+#if CDS_THREADING_HPX
 #include <hpx/config.hpp>
+#endif
+
 #include <boost/version.hpp>
 #if BOOST_VERSION < 104800
 #   error "For boost::container::flat_set you must use boost 1.48 or above"
 #endif
 
 #include <cds/container/striped_set/adapter.h>
-#include <hpx/config.hpp>
 #include <boost/container/flat_set.hpp>
 
 //#if CDS_COMPILER == CDS_COMPILER_MSVC && CDS_COMPILER_VERSION >= 1700

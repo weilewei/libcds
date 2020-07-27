@@ -6,9 +6,12 @@
 #ifndef CDSLIB_CONTAINER_STRIPED_SET_BOOST_SLIST_ADAPTER_H
 #define CDSLIB_CONTAINER_STRIPED_SET_BOOST_SLIST_ADAPTER_H
 
+#if CDS_THREADING_HPX
+#include <hpx/config.hpp>
+#endif
+
 #include <functional>   // ref
 #include <cds/container/striped_set/adapter.h>
-#include <hpx/config.hpp>
 #include <boost/container/slist.hpp>
 
 //@cond

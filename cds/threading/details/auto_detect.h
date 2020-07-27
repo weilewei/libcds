@@ -30,11 +30,10 @@
 #endif // #if defined(CDS_THREADING_AUTODETECT)
 
 
-
-#if defined(CDS_THREADING_MSVC)
-#   include <cds/threading/details/msvc.h>
-#elif defined(CDS_THREADING_HPX)
+#if defined(CDS_THREADING_HPX)
 #   include <cds/threading/details/hpx.h>
+#elif defined(CDS_THREADING_MSVC)
+#   include <cds/threading/details/msvc.h>
 #elif defined(CDS_THREADING_WIN_TLS)
 #   include <cds/threading/details/wintls.h>
 #elif defined(CDS_THREADING_PTHREAD)

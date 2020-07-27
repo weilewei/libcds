@@ -22,7 +22,7 @@ namespace cds { namespace OS {
 #if CDS_THREADING_HPX
         typedef hpx::threads::thread_id ThreadId;
 #else
-        typedef std::threads::thread_id ThreadId;
+        typedef std::thread::native_handle_type ThreadId;
 #endif
 
         /// Get current thread id

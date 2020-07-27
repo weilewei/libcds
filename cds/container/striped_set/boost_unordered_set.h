@@ -6,8 +6,11 @@
 #ifndef CDSLIB_CONTAINER_STRIPED_SET_BOOST_UNORDERED_SET_ADAPTER_H
 #define CDSLIB_CONTAINER_STRIPED_SET_BOOST_UNORDERED_SET_ADAPTER_H
 
-#include <cds/container/striped_set/adapter.h>
+#if CDS_THREADING_HPX
 #include <hpx/config.hpp>
+#endif
+
+#include <cds/container/striped_set/adapter.h>
 #include <boost/unordered_set.hpp>
 
 //@cond
