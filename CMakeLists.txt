@@ -25,17 +25,8 @@ set(CMAKE_TARGET_ARCHITECTURE "" CACHE string "Target build architecture")
 
 if(NOT LIBCDS_WITH_HPX)
     find_package(Threads)
-else()
-    if(NOT LIBCDS_INSIDE_HPX)
-        find_package(HPX REQUIRED)
-        if (HPX_FOUND)
-            message(STATUS "HPX Found")
-        endif()
-    endif()
-    message(STATUS "HPX Found")
-    set(CDS_HAVE_HPX TRUE)
-    add_definitions(-DCDS_THREADING_HPX)
-    include_directories(${HPX_INCLUDE_DIRS})
+elseif(NOT LIBCDS_AS_HPX_MODULE)
+    find_package(HPX REQUIRED)
 endif()
 
 if(NOT CMAKE_TARGET_ARCHITECTURE)
@@ -153,9 +144,6 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")
 
 CHECK_INCLUDE_FILE_CXX(linux/membarrier.h CDS_HAVE_LINUX_MEMBARRIER_H CMAKE_CXX_FLAGS)
 
-# To see what compiler flags we use
-set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
-
 message("Build type -- ${CMAKE_BUILD_TYPE}")
 message("Compiler version: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 message("System: ${CMAKE_SYSTEM_NAME} version: ${CMAKE_SYSTEM_VERSION}")
@@ -183,6 +171,12 @@ set(SOURCES src/init.cpp
             src/topology_osx.cpp
             src/dllmain.cpp)
 
+# if building libCDS as an hpx module, set the files and exit
+if (LIBCDS_AS_HPX_MODULE)
+    set(LIBCDS_SOURCELIST ${SOURCES} PARENT_SCOPE)
+    return()
+endif()
+
 add_library(${CDS_SHARED_LIBRARY} SHARED ${SOURCES})
 set_target_properties(${CDS_SHARED_LIBRARY} PROPERTIES VERSION ${PROJECT_VERSION}
         DEBUG_POSTFIX "_d")
@@ -205,13 +199,8 @@ if(NOT LIBCDS_WITH_HPX)
 else()
     target_compile_definitions(${CDS_SHARED_LIBRARY} PUBLIC CDS_THREADING_HPX)
     target_compile_definitions(${CDS_STATIC_LIBRARY} PUBLIC CDS_THREADING_HPX)
-    if(LIBCDS_INSIDE_HPX)
-        target_link_libraries(${CDS_SHARED_LIBRARY} PUBLIC hpx_core)
-        target_link_libraries(${CDS_STATIC_LIBRARY} PUBLIC hpx_core)
-    else()
-        target_link_libraries(${CDS_SHARED_LIBRARY} PUBLIC HPX::hpx)
-        target_link_libraries(${CDS_STATIC_LIBRARY} PUBLIC HPX::hpx)
-    endif()
+    target_link_libraries(${CDS_SHARED_LIBRARY} PUBLIC HPX::hpx)
+    target_link_libraries(${CDS_STATIC_LIBRARY} PUBLIC HPX::hpx)
 endif()
 target_include_directories(${CDS_SHARED_LIBRARY} INTERFACE "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>"
                                                             $<INSTALL_INTERFACE:include>)

@@ -17,7 +17,7 @@
 #       include <cds/threading/details/gcc_manager.h>
 #   endif
 #   ifdef CDS_THREADING_HPX
-#        include <cds/threading/details/hpx_manager.h>
+#        include <hpx/libcds/hpx_manager.hpp>
 #   else
 #        include <cds/threading/details/pthread_manager.h>
 #   endif

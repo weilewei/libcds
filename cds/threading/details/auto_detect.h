@@ -31,7 +31,7 @@
 
 
 #if defined(CDS_THREADING_HPX)
-#   include <cds/threading/details/hpx.h>
+#   include <hpx/libcds/hpx.hpp>
 #elif defined(CDS_THREADING_MSVC)
 #   include <cds/threading/details/msvc.h>
 #elif defined(CDS_THREADING_WIN_TLS)
