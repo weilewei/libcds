@@ -14,8 +14,6 @@ namespace cds {
                 thread_local std::pair<thread_data *, thread_data *> *tls2_ = new std::pair<thread_data *, thread_data *>(
                         nullptr,
                         nullptr);
-                const size_t MAXIMUM_THREAD_ID = 10000000;
-                static thread_data *heap_tls_[MAXIMUM_THREAD_ID];
 
                 /*static*/ CDS_EXPORT_API thread_data *DefaultTLSManager::getTLS() {
                     return tls_;
@@ -33,10 +31,13 @@ namespace cds {
 
                 /*static*/ CDS_EXPORT_API void HPXTLSManager::setTLS(thread_data *new_tls) {
                     cds::OS::posix::ThreadId thread_id = cds::OS::get_current_thread_id();
-                    std:size_t hp_tls_data = reinterpret_cast<std::size_t>(new_tls);
+                    std::size_t hp_tls_data = reinterpret_cast<std::size_t>(new_tls);
                     hpx::threads::set_libcds_hazard_pointer_data(thread_id, hp_tls_data);
                 }
 #else
+                const size_t MAXIMUM_THREAD_ID = 10000000;
+                static thread_data *heap_tls_[MAXIMUM_THREAD_ID];
+
                 /*static*/ CDS_EXPORT_API thread_data *StrangeTLSManager::getTLS() {
                     if (cds::OS::get_current_thread_id() % 2 == 0) { // % 2 with ThreadId structure?
                         return tls2_->second;
