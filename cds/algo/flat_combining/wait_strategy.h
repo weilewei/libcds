@@ -10,8 +10,9 @@
 #include <cds/algo/backoff_strategy.h>
 #include <mutex>
 #include <condition_variable>
+#ifndef CDS_CXX11_THREAD_LOCAL_SUPPORT
 #include <boost/thread/tss.hpp>  // thread_specific_ptr
-
+#endif
 
 namespace cds { namespace opt {
 

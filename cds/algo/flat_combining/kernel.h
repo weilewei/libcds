@@ -74,6 +74,57 @@ namespace cds { namespace algo {
     */
     namespace flat_combining {
 
+#ifdef CDS_CXX11_THREAD_LOCAL_SUPPORT
+        template <typename T>
+        struct thread_specific_ptr
+        {
+            typedef T element_type;
+
+            thread_specific_ptr() = default;
+
+            explicit thread_specific_ptr(void (*func)(T*))
+              : cleanup_(reinterpret_cast<void (*)(void*)>(func))
+            {}
+
+            T* get() const
+            {
+                return ptr_;
+            }
+
+            T* operator->() const
+            {
+                return ptr_;
+            }
+
+            T& operator*() const
+            {
+                HPX_ASSERT(nullptr != ptr_);
+                return *ptr_;
+            }
+
+            void reset(T* new_value = nullptr)
+            {
+                if (cleanup_) {
+                    cleanup_(ptr_);
+                }
+                else {
+                    delete ptr_;
+                }
+                ptr_ = new_value;
+            }
+
+        private:
+            static thread_local T* ptr_;
+            void (*cleanup_)(void*) = nullptr;
+        };
+
+        template <typename T>
+        thread_local T* thread_specific_ptr<T>::ptr_ = nullptr;
+#else
+        template <typename T>
+        using thread_specific_ptr = boost::thread_specific_ptr<T>;
+#endif
+
         /// Flat combining internal statistics
         template <typename Counter = cds::atomicity::event_counter >
         struct stat
@@ -232,7 +283,7 @@ namespace cds { namespace algo {
             atomics::atomic<unsigned int>  m_nCount;    ///< Total count of combining passes. Used as an age.
             publication_record_type*    m_pHead;        ///< Head of active publication list
             publication_record_type*    m_pAllocatedHead; ///< Head of allocated publication list
-            boost::thread_specific_ptr< publication_record_type > m_pThreadRec;   ///< Thread-local publication record
+            thread_specific_ptr< publication_record_type > m_pThreadRec;   ///< Thread-local publication record
             mutable global_lock_type    m_Mutex;        ///< Global mutex
             mutable stat                m_Stat;         ///< Internal statistics
             unsigned int const          m_nCompactFactor;    ///< Publication list compacting factor (the list will be compacted through \p %m_nCompactFactor combining passes)
